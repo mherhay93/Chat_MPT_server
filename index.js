@@ -1,9 +1,15 @@
 import express from "express";
 import {createServer} from "http";
 import {Server} from "socket.io";
+import routeLogin from "./routers/login.js";
+import cors from "cors"
 
 const app = express()
 app.use(express.json())
+app.use(cors({
+   origin:'*'
+}))
+app.use('/login', routeLogin)
 const httpServer = createServer(app)
 const io = new Server(httpServer, {
    cors:{
@@ -11,14 +17,9 @@ const io = new Server(httpServer, {
    }
 })
 
-app.get("/", (req, res) => {
-   res.send('dsklfklkdslfk')
-})
-
 io.on('connection',(socket) => {
    socket.on('message', (data) => {
       io.sockets.emit('message_get', {message:data, id: socket.id})
-      console.log('data ------->', data);
    })
    socket.on('disconnect', () => {
       console.log('user disconnected');
