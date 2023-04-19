@@ -1,15 +1,17 @@
 import express from "express";
 import {createServer} from "http";
 import {Server} from "socket.io";
-import routeLogin from "./routers/login.js";
 import cors from "cors"
+import authentication from "./routers/authentication.js";
 
 const app = express()
+
 app.use(express.json())
 app.use(cors({
    origin:'*'
 }))
-app.use('/login', routeLogin)
+app.use('/auth', authentication)
+
 const httpServer = createServer(app)
 const io = new Server(httpServer, {
    cors:{
