@@ -3,13 +3,24 @@ import {createServer} from "http";
 import {Server} from "socket.io";
 import cors from "cors"
 import authentication from "./routers/authentication.js";
+import session from "express-session";
+import passport from "passport";
 
 const app = express()
+
+app.use(session({
+   secret:process.env.SESSION_SECRET,
+   resave:false,
+   saveUninitialized:false,
+   cookie: { secure: true }
+}))
 
 app.use(express.json())
 app.use(cors({
    origin:'*'
 }))
+app.use(passport.initialize())
+app.use(passport.session())
 app.use('/auth', authentication)
 
 const httpServer = createServer(app)
